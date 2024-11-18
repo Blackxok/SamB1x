@@ -2,38 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root for default values */
+/* Default Global Styles */
 :root {
-	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-	line-height: 1.5;
-	font-weight: 400;
+	--font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+	--line-height: 1.5;
+	--font-weight: 400;
 
-	color-scheme: light dark;
-	color: rgba(255, 255, 255, 0.87);
-	background-color: #242424;
+	--color-scheme: light dark;
+	--color: rgba(0, 0, 0, 0.87);
+	--background-color: #ffffff;
 
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	--font-synthesis: none;
+	--text-rendering: optimizeLegibility;
+	--webkit-font-smoothing: antialiased;
+	--moz-osx-font-smoothing: grayscale;
 }
 
-/* Global styles for the body */
-body {
-	margin: 0;
-	display: flex;
-	place-items: center;
-	min-width: 320px;
-	min-height: 100vh;
-}
-
+/* Typography */
 h1 {
-	font-size: 3em;
+	font-size: 3rem;
 }
 
-/* Single @layer base block */
+/* Tailwind Base Layer */
 @layer base {
-	/* CSS Variables for Light Theme */
+	/* Light Theme Variables */
 	:root {
 		--background: 0 0% 100%;
 		--foreground: 0 0% 3.9%;
@@ -62,7 +54,7 @@ h1 {
 		--radius: 0.5rem;
 	}
 
-	/* CSS Variables for Dark Theme */
+	/* Dark Theme Variables */
 	.dark {
 		--background: 0 0% 3.9%;
 		--foreground: 0 0% 98%;
@@ -90,9 +82,9 @@ h1 {
 		--chart-5: 340 75% 55%;
 	}
 
-	/* Global Border and Background */
+	/* General Styling */
 	* {
-		@apply border-gray-300; /* Ensure Tailwind's border-gray-300 exists */
+		@apply border-gray-300; /* Tailwind's border utility */
 	}
 
 	body {
