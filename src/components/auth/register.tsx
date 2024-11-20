@@ -32,9 +32,7 @@ export default function Register() {
 					<Input placeholder='*****' type='password' />
 				</div>
 			</div>
-			<Button className='w-full h-12 mt-6 h-10' variant={'submit'}>
-				Register
-			</Button>
+			<Button className='w-full h-12 mt-6 h-10'>Register</Button>
 		</div>
 	)
 }

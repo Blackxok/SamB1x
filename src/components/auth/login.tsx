@@ -26,9 +26,7 @@ export default function Login() {
 				<span>Password</span>
 				<Input placeholder='*****' type='password' />
 			</div>
-			<Button className='w-full h-12 mt-6 h-10' variant={'submit'}>
-				Login
-			</Button>
+			<Button className='w-full h-12 mt-6 h-10'>Login</Button>
 		</div>
 	)
 }

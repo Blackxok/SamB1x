@@ -7,11 +7,11 @@ export default function SocialMedia() {
 		<>
 			<Separator className='my-3' />
 			<div className='grid grid-cols-2 gap-3'>
-				<Button variant={'gray'}>
+				<Button>
 					<FaGithub />
 					<span>Sign in with Github</span>
 				</Button>
-				<Button variant={'redder'}>
+				<Button>
 					<FaGoogle />
 					<span>Sign in with Google</span>
 				</Button>
