@@ -1,8 +1,14 @@
+import { auth } from '@/firebase/fb_init'
 import { loginSchema } from '@/lib/validation'
 import { useAuthState } from '@/stores/auth.store'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { RiAlertLine } from 'react-icons/ri'
+import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Button } from '../ui/button'
 import {
 	Form,
@@ -14,8 +20,12 @@ import {
 } from '../ui/form'
 import { Input } from '../ui/input'
 import { Separator } from '../ui/separator'
-
+//
+//
 export default function Login() {
+	const navigate = useNavigate()
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState('')
 	const { setAuth } = useAuthState()
 
 	const form = useForm<z.infer<typeof loginSchema>>({
@@ -25,9 +35,21 @@ export default function Login() {
 			password: '',
 		},
 	})
+
 	const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-		// const { email, password } = values
+		const { email, password } = values
+		setLoading(true)
+		try {
+			const res = await signInWithEmailAndPassword(auth, email, password)
+			navigate('/')
+		} catch (err) {
+			const errMsg = err as Error
+			setError(errMsg.message)
+		} finally {
+			setLoading(false)
+		}
 	}
+
 	return (
 		<div className='flex flex-col'>
 			<h2 className='text-xl font-bold'>Login</h2>
@@ -41,6 +63,15 @@ export default function Login() {
 				</span>
 			</p>
 			<Separator />
+			{error && (
+				<Alert variant='destructive'>
+					<RiAlertLine className='h-4 w-4' />
+					<AlertTitle>Error</AlertTitle>
+					<AlertDescription>
+						Your session has expired. Please log in again.
+					</AlertDescription>
+				</Alert>
+			)}
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<FormField
@@ -50,7 +81,11 @@ export default function Login() {
 							<FormItem>
 								<FormLabel className='text-muted-foreground'>Email</FormLabel>
 								<FormControl>
-									<Input placeholder='example@gmail.com' {...field} />
+									<Input
+										placeholder='example@gmail.com'
+										disabled={loading}
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -65,13 +100,18 @@ export default function Login() {
 									Password
 								</FormLabel>
 								<FormControl>
-									<Input placeholder='*****' {...field} />
+									<Input
+										type='password'
+										placeholder='*****'
+										disabled={loading}
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-					<Button className='w-full mt-3' type='submit'>
+					<Button className='w-full mt-3' type='submit' disabled={loading}>
 						Submit
 					</Button>
 				</form>

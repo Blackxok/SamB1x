@@ -1,8 +1,14 @@
+import { auth } from '@/firebase/fb_init'
 import { registerSchema } from '@/lib/validation'
 import { useAuthState } from '@/stores/auth.store'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { RiAlertLine } from 'react-icons/ri'
+import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Button } from '../ui/button'
 import {
 	Form,
@@ -16,7 +22,12 @@ import { Input } from '../ui/input'
 import { Separator } from '../ui/separator'
 
 export default function Register() {
+	const navigate = useNavigate()
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState('')
+
 	const { setAuth } = useAuthState()
+
 	const form = useForm<z.infer<typeof registerSchema>>({
 		resolver: zodResolver(registerSchema),
 		defaultValues: {
@@ -25,7 +36,17 @@ export default function Register() {
 		},
 	})
 	const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-		// const { email, password } = values
+		const { email, password } = values
+		setLoading(true)
+		try {
+			const res = await createUserWithEmailAndPassword(auth, email, password)
+			navigate('/')
+		} catch (err) {
+			const errMsg = err as Error
+			setError(errMsg.message)
+		} finally {
+			setLoading(false)
+		}
 	}
 	return (
 		<div className='flex flex-col'>
@@ -40,6 +61,13 @@ export default function Register() {
 				</span>
 			</p>
 			<Separator />
+			{error && (
+				<Alert variant='destructive'>
+					<RiAlertLine className='h-4 w-4' />
+					<AlertTitle>Error</AlertTitle>
+					<AlertDescription>{error}</AlertDescription>
+				</Alert>
+			)}
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<FormField
@@ -49,7 +77,11 @@ export default function Register() {
 							<FormItem>
 								<FormLabel className='text-muted-foreground'>Email</FormLabel>
 								<FormControl>
-									<Input placeholder='example@gmail.com' {...field} />
+									<Input
+										placeholder='example@gmail.com'
+										{...field}
+										disabled={loading}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -65,7 +97,12 @@ export default function Register() {
 										Password
 									</FormLabel>
 									<FormControl>
-										<Input placeholder='*****' {...field} />
+										<Input
+											type='password'
+											placeholder='*****'
+											{...field}
+											disabled={loading}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -80,7 +117,12 @@ export default function Register() {
 										Confirm Password
 									</FormLabel>
 									<FormControl>
-										<Input placeholder='*****' {...field} />
+										<Input
+											type='password'
+											placeholder='*****'
+											{...field}
+											disabled={loading}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
