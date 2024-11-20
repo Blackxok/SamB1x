@@ -1,10 +1,32 @@
+import { registerSchema } from '@/lib/validation'
 import { useAuthState } from '@/stores/auth.store'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { Button } from '../ui/button'
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '../ui/form'
 import { Input } from '../ui/input'
 import { Separator } from '../ui/separator'
 
 export default function Register() {
 	const { setAuth } = useAuthState()
+	const form = useForm<z.infer<typeof registerSchema>>({
+		resolver: zodResolver(registerSchema),
+		defaultValues: {
+			email: '',
+			password: '',
+		},
+	})
+	const onSubmit = async (values: z.infer<typeof registerSchema>) => {
+		// const { email, password } = values
+	}
 	return (
 		<div className='flex flex-col'>
 			<h2 className='text-xl font-bold'>Register</h2>
@@ -18,21 +40,58 @@ export default function Register() {
 				</span>
 			</p>
 			<Separator />
-			<div className='mt-2'>
-				<span>Email</span>
-				<Input placeholder='example@gmail.com' />
-			</div>
-			<div className='mt-2 grid grid-cols-2 gap-3'>
-				<div>
-					<span>Password</span>
-					<Input placeholder='*****' type='password' />
-				</div>
-				<div>
-					<span>Confirm Password</span>
-					<Input placeholder='*****' type='password' />
-				</div>
-			</div>
-			<Button className='w-full h-12 mt-6 h-10'>Register</Button>
+			<Form {...form}>
+				<form onSubmit={form.handleSubmit(onSubmit)}>
+					<FormField
+						control={form.control}
+						name='email'
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel className='text-muted-foreground'>Email</FormLabel>
+								<FormControl>
+									<Input placeholder='example@gmail.com' {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<div className='grid grid-cols-2 gap-2'>
+						<FormField
+							control={form.control}
+							name='password'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className='text-muted-foreground'>
+										Password
+									</FormLabel>
+									<FormControl>
+										<Input placeholder='*****' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>{' '}
+						<FormField
+							control={form.control}
+							name='confirmPassword'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className='text-muted-foreground'>
+										Confirm Password
+									</FormLabel>
+									<FormControl>
+										<Input placeholder='*****' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<Button className='w-full mt-3' type='submit'>
+						Submit
+					</Button>
+				</form>
+			</Form>
 		</div>
 	)
 }
