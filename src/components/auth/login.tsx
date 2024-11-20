@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import { RiAlertLine } from 'react-icons/ri'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
+import Loader from '../shared/loader'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Button } from '../ui/button'
 import {
@@ -63,6 +64,7 @@ export default function Login() {
 				</span>
 			</p>
 			<Separator />
+			{loading && <Loader />}
 			{error && (
 				<Alert variant='destructive'>
 					<RiAlertLine className='h-4 w-4' />
