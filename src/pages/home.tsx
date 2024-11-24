@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { iconS } from '@/constants'
+import { Link } from 'react-router-dom'
 
 export default function Home() {
 	return (
@@ -11,9 +12,11 @@ export default function Home() {
 						I'm here to help you plan your next big idea, from brainstorming to
 						execution. Let's get started.
 					</p>
-					<Button className='w-32 h-12  text-white font-semibold tracking-wider mt-5'>
-						Start planning
-					</Button>
+					<Link to={'/dashboard'}>
+						<Button className='w-32 h-12  text-white font-semibold tracking-wider mt-5'>
+							Start planning
+						</Button>
+					</Link>
 
 					<div className='mt-5 '>
 						<p className='mb-5 text-muted-foreground'>AS FEATURED IN</p>

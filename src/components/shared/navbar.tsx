@@ -2,10 +2,10 @@ import { navLinks } from '@/constants'
 import { useUserState } from '@/stores/user.store'
 import { Link } from 'react-router-dom'
 import { Button } from '../ui/button'
+import UserBox from './userBox'
 
 export default function Navbar() {
 	const { user } = useUserState()
-	console.log(user)
 
 	return (
 		<div className='w-full h-[10vh] border-b fixed inset-0 z-50 bg-background'>
@@ -23,11 +23,15 @@ export default function Navbar() {
 							{link.label}
 						</a>
 					))}
-					<Link to={'/auth'}>
-						<Button variant={'secondary'} className='bg-gray-300'>
-							Join free
-						</Button>
-					</Link>
+					{user ? (
+						<UserBox />
+					) : (
+						<Link to={'/auth'}>
+							<Button variant={'secondary'} className='bg-gray-300'>
+								Join free
+							</Button>
+						</Link>
+					)}
 				</div>
 			</div>
 		</div>

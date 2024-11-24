@@ -12,5 +12,5 @@ interface IUserStore {
 export const useUserState = create<IUserStore>(set => ({
 	isLoading: true,
 	user: null,
-	setUser: user => set({ user, isLoading: false }),
+	setUser: user => set({ user }),
 }))

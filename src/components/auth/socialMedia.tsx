@@ -33,6 +33,10 @@ export default function SocialMedia() {
 			.then(() => {
 				navigate('/')
 			})
+			.catch(error => {
+				console.error('Error during GitHub login:', error)
+				alert('GitHub login failed: ' + error.message)
+			})
 			.finally(() => {
 				setLoading(false)
 			})

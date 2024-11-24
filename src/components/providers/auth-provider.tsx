@@ -1,14 +1,16 @@
 import { auth } from '@/firebase/fb_init'
 import { useUserState } from '@/stores/user.store'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import Loader from '../shared/loader'
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-	const { isLoading, setUser } = useUserState()
+	const { setUser } = useUserState()
+	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
 		auth.onAuthStateChanged(user => {
 			user && setUser(user)
+			setIsLoading(false)
 		})
 	}, [])
 
