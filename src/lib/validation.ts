@@ -35,3 +35,7 @@ export const registerSchema = z
 		message: 'Confirm password do not much',
 		path: ['confirmPassword'],
 	})
+
+export const taskSchema = z.object({
+	title: z.string().min(5),
+})
