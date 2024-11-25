@@ -1,6 +1,7 @@
 import { auth } from '@/firebase/fb_init'
 import { loginSchema } from '@/lib/validation'
 import { useAuthState } from '@/stores/auth.store'
+import { useUserState } from '@/stores/user.store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { useState } from 'react'
@@ -27,7 +28,9 @@ export default function Login() {
 	const navigate = useNavigate()
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState('')
+
 	const { setAuth } = useAuthState()
+	const { setUser } = useUserState()
 
 	const form = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
@@ -42,6 +45,7 @@ export default function Login() {
 		setLoading(true)
 		try {
 			const res = await signInWithEmailAndPassword(auth, email, password)
+			setUser(res.user)
 			navigate('/')
 		} catch (err) {
 			const errMsg = err as Error

@@ -1,6 +1,7 @@
 import { auth } from '@/firebase/fb_init'
 import { registerSchema } from '@/lib/validation'
 import { useAuthState } from '@/stores/auth.store'
+import { useUserState } from '@/stores/user.store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { useState } from 'react'
@@ -28,6 +29,7 @@ export default function Register() {
 	const [error, setError] = useState('')
 
 	const { setAuth } = useAuthState()
+	const { setUser } = useUserState()
 
 	const form = useForm<z.infer<typeof registerSchema>>({
 		resolver: zodResolver(registerSchema),
@@ -41,6 +43,7 @@ export default function Register() {
 		setLoading(true)
 		try {
 			const res = await createUserWithEmailAndPassword(auth, email, password)
+			setUser(res.user)
 			navigate('/')
 		} catch (err) {
 			const errMsg = err as Error
