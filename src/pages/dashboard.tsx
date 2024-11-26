@@ -17,12 +17,20 @@ import { PlansService } from '@/service/plan.service'
 import { useUserState } from '@/stores/user.store'
 import { IPlan } from '@/types/types'
 import { useQuery } from '@tanstack/react-query'
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore/lite'
+import {
+	addDoc,
+	collection,
+	deleteDoc,
+	doc,
+	updateDoc,
+} from 'firebase/firestore/lite'
 import { useState } from 'react'
 import { RiAlertLine } from 'react-icons/ri'
+import { toast } from 'sonner'
 import { z } from 'zod'
 //
 export default function Dashboard() {
+	const [deleting, setDeleting] = useState(false)
 	const [isEditing, setIsEditing] = useState(false)
 	const [current, setCurrent] = useState<IPlan | null>(null)
 	const [open, setOpen] = useState(false)
@@ -53,10 +61,9 @@ export default function Dashboard() {
 		}
 	}
 	const onUpdate = async ({ title }: z.infer<typeof taskSchema>) => {
-		if (!user) return null
-		if (!current) return null
-		const ref = doc(db, 'plans', current.id)
-		return updateDoc(ref, { title })
+		if (!user || !current) return null
+
+		return updateDoc(doc(db, 'plans', current.id), { title })
 			.then(() => refetch())
 			.then(() => setIsEditing(false))
 			.then(() => setCurrent(null))
@@ -66,6 +73,20 @@ export default function Dashboard() {
 	const onEdit = (plan: IPlan) => {
 		setIsEditing(true)
 		setCurrent(plan)
+	}
+	const onDelete = async (id: string) => {
+		setDeleting(true)
+		const promise = deleteDoc(doc(db, 'plans', id))
+			.then(() => {
+				refetch()
+			})
+			.finally(() => setDeleting(false))
+
+		toast.promise(promise, {
+			loading: 'Loading...',
+			success: 'Plan deleted successfully!',
+			error: 'Failed to delete plan!',
+		})
 	}
 	return (
 		<>
@@ -81,7 +102,7 @@ export default function Dashboard() {
 						</div>
 						<Separator />
 						<div className='w-full p-4 rounded-md flex justify-between'>
-							{isPending && <Loader />}
+							{(isPending || deleting) && <Loader />}
 							{error && (
 								<Alert variant='destructive' className='w-full'>
 									<RiAlertLine className='h-4 w-4' />
@@ -97,6 +118,7 @@ export default function Dashboard() {
 												key={plan.id}
 												plan={plan}
 												onEdit={() => onEdit(plan)}
+												onDelete={() => onDelete(plan.id)}
 											/>
 										))}
 									{isEditing && (

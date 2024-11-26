@@ -8,9 +8,10 @@ import { Card } from '../ui/card'
 interface Props {
 	plan: IPlan
 	onEdit: () => void
+	onDelete: () => void
 }
 
-export default function PlansItems({ plan, onEdit }: Props) {
+export default function PlansItems({ plan, onEdit, onDelete }: Props) {
 	return (
 		<Card className='w-full p-4 shadow-md grid grid-cols-4 items-center relative'>
 			<div className='flex gap-1 items-center col-span-2 '>
@@ -28,7 +29,7 @@ export default function PlansItems({ plan, onEdit }: Props) {
 				<Button size={'icon'} onClick={onEdit}>
 					<Edit />
 				</Button>{' '}
-				<Button size={'icon'}>
+				<Button size={'icon'} onClick={onDelete}>
 					<Trash />
 				</Button>
 			</div>
