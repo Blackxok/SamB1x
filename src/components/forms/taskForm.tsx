@@ -17,7 +17,12 @@ interface Props {
 	handler: (values: z.infer<typeof taskSchema>) => Promise<void | null>
 }
 
-export default function TaskForm({ title = '', handler }: Props) {
+export default function TaskForm({
+	title = '',
+	isEdit,
+	handler,
+	onClose,
+}: Props) {
 	const [loading, setLoading] = useState(false)
 	const { user } = useUserState()
 
@@ -74,7 +79,12 @@ export default function TaskForm({ title = '', handler }: Props) {
 						</FormItem>
 					)}
 				/>
-				<div className='flex justify-end mt-4'>
+				<div className='flex justify-end gap-2 mt-4'>
+					{isEdit && (
+						<Button onClick={onClose} type='button' disabled={loading}>
+							Cancel
+						</Button>
+					)}
 					<Button type='submit' disabled={loading}>
 						Submit
 					</Button>
