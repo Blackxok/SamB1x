@@ -17,6 +17,7 @@ import { PlansService } from '@/service/plan.service'
 import { useUserState } from '@/stores/user.store'
 import { IPlan } from '@/types/types'
 import { useQuery } from '@tanstack/react-query'
+import { addMilliseconds, addMinutes, format } from 'date-fns'
 import {
 	addDoc,
 	collection,
@@ -88,6 +89,16 @@ export default function Dashboard() {
 			error: 'Failed to delete plan!',
 		})
 	}
+	const formatData = (time: number) => {
+		const data = addMilliseconds(new Date(0), time)
+		const formattedData = format(
+			addMinutes(data, data.getTimezoneOffset()),
+			'HH:mm:ss'
+		)
+
+		return formattedData
+	}
+
 	return (
 		<>
 			<div className='h-screen max-w-6xl mx-auto flex items-center'>
@@ -115,6 +126,7 @@ export default function Dashboard() {
 									{!isEditing &&
 										data.plans.map(plan => (
 											<PlansItems
+												refetch={refetch}
 												key={plan.id}
 												plan={plan}
 												onEdit={() => onEdit(plan)}
@@ -140,15 +152,24 @@ export default function Dashboard() {
 
 					{/* Right Section (Some other items) */}
 					<div className='flex flex-col rounded-md space-y-3 relative w-full'>
-						{['Some', 'Some', 'Some'].map((title, index) => (
-							<div
-								key={index}
-								className='p-4 h-24 relative rounded-md border border-black'
-							>
-								<div className='text-2xl font-bold'>{title}</div>
-								<div className='text-2xl'>20:20:20</div>
+						{data && (
+							<div className='p-4 h-24 relative rounded-md border border-black'>
+								<div className='text-2xl font-bold'>TotalWeek</div>
+								<div className='text-2xl'>{formatData(data.weekTotal)}</div>
 							</div>
-						))}
+						)}{' '}
+						{data && (
+							<div className='p-4 h-24 relative rounded-md border border-black'>
+								<div className='text-2xl font-bold'>TotalMonth</div>
+								<div className='text-2xl'>{formatData(data.monthTotal)}</div>
+							</div>
+						)}{' '}
+						{data && (
+							<div className='p-4 h-24 relative rounded-md border border-black'>
+								<div className='text-2xl font-bold'>TotalTime</div>
+								<div className='text-2xl'>{formatData(data.total)}</div>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

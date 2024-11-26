@@ -1,6 +1,13 @@
-import { db } from '@/firebase/fb_init'
+import { auth, db } from '@/firebase/fb_init'
 import { IPlan, IPlanData } from '@/types/types'
-import { collection, getDocs, query } from 'firebase/firestore/lite'
+import {
+	endOfMonth,
+	endOfWeek,
+	isWithinInterval,
+	startOfMonth,
+	startOfWeek,
+} from 'date-fns'
+import { collection, getDocs, query, where } from 'firebase/firestore/lite'
 
 export const PlansService = {
 	getPlans: async (): Promise<IPlanData> => {
@@ -8,9 +15,33 @@ export const PlansService = {
 		let monthTotal = 0
 		let total = 0
 
+		const now = new Date()
+		const weekStart = startOfWeek(now)
+		const weekEnd = endOfWeek(now)
+		const monthStart = startOfMonth(now)
+		const monthEnd = endOfMonth(now)
+
 		try {
-			const plansQuery = query(collection(db, 'plans'))
+			const plansQuery = query(
+				collection(db, 'plans'),
+				where('userId', '==', auth.currentUser?.uid)
+			)
+
 			const querySnapshot = await getDocs(plansQuery)
+
+			querySnapshot.docs.forEach(doc => {
+				const data = doc.data()
+				const planDate = new Date(data.startTime)
+				const planTime = data.totalTime || 0
+
+				if (isWithinInterval(planDate, { start: weekStart, end: weekEnd })) {
+					weekTotal += planTime
+				}
+				if (isWithinInterval(planDate, { start: monthStart, end: monthEnd })) {
+					monthTotal += planTime
+				}
+				total += planTime
+			})
 
 			const plans: IPlan[] = querySnapshot.docs.map(doc => ({
 				...doc.data(),

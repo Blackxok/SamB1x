@@ -14,4 +14,4 @@ export interface IPlan {
 	userId: string
 	status: IPlanStatus
 }
-export type IPlanStatus = 'success' | 'in_progress' | 'un_started'
+export type IPlanStatus = 'un_started' | 'in_progress' | 'paused'
