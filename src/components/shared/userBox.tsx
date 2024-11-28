@@ -23,6 +23,7 @@ export default function UserBox() {
 		auth.signOut().then(() => {
 			setUser(null)
 			navigate('/auth')
+			window.location.reload()
 		})
 	}
 	return (

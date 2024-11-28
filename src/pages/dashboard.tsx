@@ -103,7 +103,6 @@ export default function Dashboard() {
 		<>
 			<div className='h-screen max-w-6xl mx-auto flex items-center'>
 				<div className='grid grid-cols-2 w-full gap-8 items-center'>
-					{/* Left Section (Plan list) */}
 					<div className='flex flex-col rounded-md space-y-3 border border-black'>
 						<div className='w-full p-4 flex justify-between'>
 							<div className='text-2xl font-bold'>Planning</div>
@@ -118,7 +117,11 @@ export default function Dashboard() {
 								<Alert variant='destructive' className='w-full'>
 									<RiAlertLine className='h-4 w-4' />
 									<AlertTitle>Error</AlertTitle>
-									<AlertDescription>{error.message}</AlertDescription>
+									<AlertDescription>
+										{
+											'Something went wrong. Please check your login and try again.'
+										}
+									</AlertDescription>
 								</Alert>
 							)}
 							{data && (
@@ -150,7 +153,6 @@ export default function Dashboard() {
 						</div>
 					</div>
 
-					{/* Right Section (Some other items) */}
 					<div className='flex flex-col rounded-md space-y-3 relative w-full'>
 						{data && (
 							<div className='p-4 h-24 relative rounded-md border border-black'>
@@ -174,7 +176,6 @@ export default function Dashboard() {
 				</div>
 			</div>
 
-			{/* Dialog for TaskForm */}
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogTrigger />
 				<DialogContent>
