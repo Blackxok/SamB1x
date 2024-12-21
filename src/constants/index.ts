@@ -15,7 +15,7 @@ export const iconS = [
 ]
 
 export const navLinks = [
-	{ label: 'Home', path: '/' },
-	{ label: 'Abou', path: '/about' },
-	{ label: 'Contact', path: '/contact' },
+	{ label: 'Home', path: '/home' },
+	// { label: 'Abou', path: '/about' },
+	// { label: 'Contact', path: '/contact' },
 ]

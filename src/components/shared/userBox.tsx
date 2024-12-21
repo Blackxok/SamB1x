@@ -22,7 +22,7 @@ export default function UserBox() {
 	const handleLogout = () => {
 		auth.signOut().then(() => {
 			setUser(null)
-			navigate('/auth')
+			navigate('/')
 			window.location.reload()
 		})
 	}
@@ -31,26 +31,17 @@ export default function UserBox() {
 			<DropdownMenuTrigger asChild>
 				<Avatar className='cursor-pointer'>
 					<AvatarImage src={user?.photoURL!} />
-					<AvatarFallback className='uppercase'>
-						{user?.email![0]}
-					</AvatarFallback>
+					<AvatarFallback className='uppercase'>{user?.email![0]}</AvatarFallback>
 				</Avatar>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent
-				className='w-80'
-				align='start'
-				alignOffset={11}
-				forceMount
-			>
+			<DropdownMenuContent className='w-80' align='start' alignOffset={11} forceMount>
 				<div className='flex flex-col space-y-4 p-2'>
 					<p className='text-xs font-medium leading-none'>{user?.email}</p>
 					<div className='flex items-center gap-x-2'>
 						<div className='rounded-md p-1'>
 							<Avatar>
 								<AvatarImage src={user?.photoURL!} />
-								<AvatarFallback className='uppercase'>
-									{user?.email![0]}
-								</AvatarFallback>
+								<AvatarFallback className='uppercase'>{user?.email![0]}</AvatarFallback>
 							</Avatar>
 						</div>
 

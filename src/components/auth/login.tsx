@@ -4,7 +4,7 @@ import { useAuthState } from '@/stores/auth.store'
 import { useUserState } from '@/stores/user.store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { RiAlertLine } from 'react-icons/ri'
 import { useNavigate } from 'react-router-dom'
@@ -12,14 +12,7 @@ import { z } from 'zod'
 import Loader from '../shared/loader'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Button } from '../ui/button'
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from '../ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { Input } from '../ui/input'
 import { Separator } from '../ui/separator'
 //
@@ -28,9 +21,8 @@ export default function Login() {
 	const navigate = useNavigate()
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState('')
-
 	const { setAuth } = useAuthState()
-	const { setUser } = useUserState()
+	const { user, setUser } = useUserState()
 
 	const form = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
@@ -40,13 +32,19 @@ export default function Login() {
 		},
 	})
 
+	useEffect(() => {
+		if (user) {
+			navigate('/dashboard')
+		}
+	}, [user, navigate])
+
 	const onSubmit = async (values: z.infer<typeof loginSchema>) => {
 		const { email, password } = values
 		setLoading(true)
 		try {
 			const res = await signInWithEmailAndPassword(auth, email, password)
 			setUser(res.user)
-			navigate('/')
+			navigate('/dashboard')
 		} catch (err) {
 			const errMsg = err as Error
 			setError(errMsg.message)
@@ -73,9 +71,7 @@ export default function Login() {
 				<Alert variant='destructive'>
 					<RiAlertLine className='h-4 w-4' />
 					<AlertTitle>Error</AlertTitle>
-					<AlertDescription>
-						Your session has expired. Please log in again.
-					</AlertDescription>
+					<AlertDescription>Your session has expired. Please log in again.</AlertDescription>
 				</Alert>
 			)}
 			<Form {...form}>
@@ -87,11 +83,7 @@ export default function Login() {
 							<FormItem>
 								<FormLabel className='text-muted-foreground'>Email</FormLabel>
 								<FormControl>
-									<Input
-										placeholder='example@gmail.com'
-										disabled={loading}
-										{...field}
-									/>
+									<Input placeholder='example@gmail.com' disabled={loading} {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -102,16 +94,9 @@ export default function Login() {
 						name='password'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel className='text-muted-foreground'>
-									Password
-								</FormLabel>
+								<FormLabel className='text-muted-foreground'>Password</FormLabel>
 								<FormControl>
-									<Input
-										type='password'
-										placeholder='*****'
-										disabled={loading}
-										{...field}
-									/>
+									<Input type='password' placeholder='*****' disabled={loading} {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>

@@ -18,15 +18,10 @@ import { useUserState } from '@/stores/user.store'
 import { IPlan } from '@/types/types'
 import { useQuery } from '@tanstack/react-query'
 import { addMilliseconds, addMinutes, format } from 'date-fns'
-import {
-	addDoc,
-	collection,
-	deleteDoc,
-	doc,
-	updateDoc,
-} from 'firebase/firestore/lite'
-import { useState } from 'react'
+import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore/lite'
+import { useEffect, useState } from 'react'
 import { RiAlertLine } from 'react-icons/ri'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 //
@@ -36,6 +31,14 @@ export default function Dashboard() {
 	const [current, setCurrent] = useState<IPlan | null>(null)
 	const [open, setOpen] = useState(false)
 	const { user } = useUserState()
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		if (!user) {
+			// alert('Please login!')
+			navigate('/')
+		}
+	}, [user, navigate])
 
 	const { isPending, data, error, refetch } = useQuery({
 		queryKey: ['plans'],
@@ -75,6 +78,7 @@ export default function Dashboard() {
 		setIsEditing(true)
 		setCurrent(plan)
 	}
+
 	const onDelete = async (id: string) => {
 		setDeleting(true)
 		const promise = deleteDoc(doc(db, 'plans', id))
@@ -91,10 +95,7 @@ export default function Dashboard() {
 	}
 	const formatData = (time: number) => {
 		const data = addMilliseconds(new Date(0), time)
-		const formattedData = format(
-			addMinutes(data, data.getTimezoneOffset()),
-			'HH:mm:ss'
-		)
+		const formattedData = format(addMinutes(data, data.getTimezoneOffset()), 'HH:mm:ss')
 
 		return formattedData
 	}
@@ -118,9 +119,7 @@ export default function Dashboard() {
 									<RiAlertLine className='h-4 w-4' />
 									<AlertTitle>Error</AlertTitle>
 									<AlertDescription>
-										{
-											'Something went wrong. Please check your login and try again.'
-										}
+										{'Something went wrong. Please check your login and try again.'}
 									</AlertDescription>
 								</Alert>
 							)}
@@ -142,9 +141,7 @@ export default function Dashboard() {
 											isEdit
 											onClose={() => setIsEditing(false)}
 											handler={
-												onUpdate as (
-													values: z.infer<typeof taskSchema>
-												) => Promise<void | null>
+												onUpdate as (values: z.infer<typeof taskSchema>) => Promise<void | null>
 											}
 										/>
 									)}

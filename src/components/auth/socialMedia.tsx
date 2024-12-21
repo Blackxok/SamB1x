@@ -1,9 +1,5 @@
 import { auth } from '@/firebase/fb_init'
-import {
-	GithubAuthProvider,
-	GoogleAuthProvider,
-	signInWithPopup,
-} from 'firebase/auth'
+import { GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { useState } from 'react'
 import { FaGithub, FaGoogle } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
@@ -20,7 +16,7 @@ export default function SocialMedia() {
 		const googleProvider = new GoogleAuthProvider()
 		signInWithPopup(auth, googleProvider)
 			.then(() => {
-				navigate('/')
+				navigate('/dashboard')
 			})
 			.finally(() => {
 				setLoading(false)
@@ -31,7 +27,7 @@ export default function SocialMedia() {
 		const githubProvider = new GithubAuthProvider()
 		signInWithPopup(auth, githubProvider)
 			.then(() => {
-				navigate('/')
+				navigate('/dashboard')
 			})
 			.catch(error => {
 				console.error('Error during GitHub login:', error)

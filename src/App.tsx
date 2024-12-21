@@ -10,8 +10,8 @@ function App() {
 		<>
 			<Navbar />
 			<Routes>
-				<Route path='/' element={<Home />} />
-				<Route path='/auth' element={<Auth />} />
+				<Route path='/' element={<Auth />} />
+				<Route path='/home' element={<Home />} />
 				<Route path='/dashboard' element={<Dashboard />} />
 			</Routes>
 			<Toaster />
